@@ -35,3 +35,58 @@ for you).
 
 Just for clarification, an item can never have its `Quality` increase above `50`, however __"Sulfuras"__ is a
 legendary item and as such its `Quality` is `80` and it never alters.
+
+
+
+
+¿Cuantos tipos de items diferentes se mencionan? 
+- items normales
+- Aged Brie
+- Sulfuras
+- Backstages passes
+- Conjured
+
+
+¿Cual es el comportamiento de cada uno?
+Items normales:
+Quality disminuye en 1 cada día
+Después de la fecha (SellIn < 0), disminuye el doble (2)
+Aged Brie:
+Quality aumenta con el tiempo
+También respeta el límite máximo de 50
+Sulfuras:
+No cambia nunca
+No disminuye SellIn ni Quality
+Su Quality es siempre 80
+Backstage passes:
+Aumenta su Quality conforme se acerca el concierto:
++1 si faltan más de 10 días
++2 si faltan 10 días o menos
++3 si faltan 5 días o menos
+Después del concierto (SellIn < 0), Quality = 0
+Conjured:
+Degradan el doble de rápido que los normales
+(-2 por día, o -4 si ya pasó la fecha)
+
+
+
+
+¿Que signigica sellIn?
+Es el numero de dias que quedan para vender el item
+
+¿Que significa quality?
+Valor numerico que denota que tan valioso es el producto
+
+¿Cuales son sus limites?
+Quality nunca puede ser menor a 0
+Quality nunca puede ser mayor a 50
+Excepción:
+Sulfuras siempre tiene Quality = 80
+
+¿Cual es la restriccion mas importante sobre la clase Item?
+No se puede modificar la clase Item ni la propiedad Items
+
+
+¿Que nuevo item hay que implementar al final del kata?
+Conjured
+
