@@ -1,0 +1,64 @@
+1. OLORES DE CODIGO detectados:
+
+- [x] Metodo demasiado largo (> 20 lineas sin separacion logica)
+  update_quality() concentra toda la logica en un solo metodo, lo que dificulta mantenimiento.
+
+- [x] Condicionales anidados (profundidad > 3)
+  Existen multiples if anidados (hasta 4 niveles), reduciendo la legibilidad.
+
+- [x] Numeros magicos (valores literales sin nombre)
+  Se usan valores como 50, 11, 6, 0 sin constantes descriptivas.
+
+- [x] String literales repetidos ("Aged Brie", "Sulfuras", etc)
+  Se repiten varias veces:
+  "Aged Brie"
+  "Backstage passes to a TAFKAL80ETC concert"
+  "Sulfuras, Hand of Ragnaros"
+
+- [x] Falta de abstraccion (toda la logica en un solo lugar)
+  No hay separacion por tipo de item, toda la logica esta centralizada.
+
+- [x] Variables con nombres pocos descriptivos
+  El uso de "item" es generico y no aporta contexto en logica compleja.
+
+- [x] Otros que identifiques:
+  - Codigo duplicado (decremento de quality repetido)
+  - Alta complejidad ciclomatica
+  - Violacion del principio Open/Closed
+
+
+2. PUNTOS DE CAMBIO (donde añadirias "Conjured"):
+
+- Linea aproximada:
+  Entre las lineas 6–25, donde se modifica quality (bloques principales de decremento).
+
+- ¿Que riesgo tiene modificar ahi directamente?
+  Alto riesgo:
+  - Puede romper reglas existentes (Aged Brie, Backstage passes, etc)
+  - Codigo altamente acoplado
+  - Dificil predecir efectos secundarios
+  - Aumenta la complejidad del metodo
+
+
+3. DEPENDENCIAS
+
+- ¿Que clases / structs usa GildedRose?
+  Usa la clase Item con atributos:
+  - name
+  - sell_in
+  - quality
+
+- ¿Quien llama a updateQuality()?
+  No se muestra en este archivo.
+  Generalmente es llamado desde un main, test o sistema externo.
+
+
+4. PREGUNTAS SIN RESPUESTA en el codigo:
+
+- ¿Que pasa si quality es negativa al entrar?
+  No hay validacion, el sistema puede operar con valores negativos.
+
+- ¿Que pasa con un nombre de item desconocido?
+  Se trata como un item normal:
+  - quality disminuye en 1 cada dia
+  - despues de sell_in < 0, disminuye en 2
