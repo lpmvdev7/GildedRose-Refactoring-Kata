@@ -5,94 +5,81 @@ class ItemUpdater:
         self.item = item
 
     def update(self):
-        if self.is_sulfuras():
-            return
+        raise NotImplementedError()
 
-        self.update_quality()
-        self.decrease_sell_in()
 
-        if self.is_expired():
-            self.update_expired()
+# --- Estrategias ---
 
-    # --- Template methods (hooks) ---
+class NormalItemUpdater(ItemUpdater):
 
-    def update_quality(self):
-        self.decrease_quality()
-
-    def update_expired(self):
-        self.decrease_quality()
-
-    # --- Helpers comunes ---
-
-    def decrease_sell_in(self):
+    def update(self):
+        self._decrease_quality(1)
         self.item.sell_in -= 1
 
-    def is_expired(self):
-        return self.item.sell_in < 0
+        if self.item.sell_in < 0:
+            self._decrease_quality(1)
 
-    def is_sulfuras(self):
-        return self.item.name == "Sulfuras, Hand of Ragnaros"
+    def _decrease_quality(self, amount):
+        self.item.quality = max(0, self.item.quality - amount)
 
-    def increase_quality(self):
-        if self.item.quality < 50:
-            self.item.quality += 1
-
-    def decrease_quality(self):
-        if self.item.quality > 0:
-            self.item.quality -= 1
-
-
-# --- Implementaciones específicas ---
 
 class AgedBrieUpdater(ItemUpdater):
 
-    def update_quality(self):
-        self.increase_quality()
+    def update(self):
+        self._increase_quality(1)
+        self.item.sell_in -= 1
 
-    def update_expired(self):
-        self.increase_quality()
+        if self.item.sell_in < 0:
+            self._increase_quality(1)
+
+    def _increase_quality(self, amount):
+        self.item.quality = min(50, self.item.quality + amount)
+
+
+class SulfurasUpdater(ItemUpdater):
+
+    def update(self):
+        pass
 
 
 class BackstagePassUpdater(ItemUpdater):
 
-    def update_quality(self):
-        self.increase_quality()
-
-        if self.item.sell_in < 11:
-            self.increase_quality()
-
-        if self.item.sell_in < 6:
-            self.increase_quality()
-
-    def update_expired(self):
-        self.item.quality = 0
-
-
-class NormalItemUpdater(ItemUpdater):
-    pass
-
-
-class SulfurasUpdater(ItemUpdater):
     def update(self):
-        # No cambia nada
-        return
+        if self.item.sell_in > 10:
+            self._increase_quality(1)
+        elif self.item.sell_in > 5:
+            self._increase_quality(2)
+        elif self.item.sell_in > 0:
+            self._increase_quality(3)
+        else:
+            self.item.quality = 0
+
+        self.item.sell_in -= 1
+
+        if self.item.sell_in < 0:
+            self.item.quality = 0
+
+    def _increase_quality(self, amount):
+        self.item.quality = min(50, self.item.quality + amount)
 
 
-# --- Factory simple ---
+# --- Factory sin ifs ---
 
-class ItemUpdaterFactory:
-    @staticmethod
-    def get_updater(item):
-        if item.name == "Aged Brie":
-            return AgedBrieUpdater(item)
-        if item.name == "Backstage passes to a TAFKAL80ETC concert":
-            return BackstagePassUpdater(item)
-        if item.name == "Sulfuras, Hand of Ragnaros":
-            return SulfurasUpdater(item)
-        return NormalItemUpdater(item)
+class UpdaterFactory:
+
+    _strategies = {
+        "Aged Brie": AgedBrieUpdater,
+        "Backstage passes to a TAFKAL80ETC concert": BackstagePassUpdater,
+        "Sulfuras, Hand of Ragnaros": SulfurasUpdater,
+    }
+
+    @classmethod
+    def get_updater(cls, item):
+        updater_class = cls._strategies.get(item.name, NormalItemUpdater)
+        return updater_class(item)
 
 
-# --- Clase principal ---
+# --- GildedRose simplificado ---
 
 class GildedRose(object):
 
@@ -101,8 +88,7 @@ class GildedRose(object):
 
     def update_quality(self):
         for item in self.items:
-            updater = ItemUpdaterFactory.get_updater(item)
-            updater.update()
+            UpdaterFactory.get_updater(item).update()
 
 
 class Item:
