@@ -25,12 +25,9 @@ class GildedRose(object):
             item.sell_in -= 1
 
             if item.sell_in < 0:
-                if item.name == self.AGED_BRIE:
-                    self._increase_quality(item)
-                elif item.name == self.BACKSTAGE_PASSES:
-                    item.quality = 0
-                else:
-                    self._decrease_quality(item)
+                self._handle_expired(item)
+
+    # --- Métodos por tipo ---
 
     def _update_aged_brie(self, item):
         self._increase_quality(item)
@@ -47,16 +44,33 @@ class GildedRose(object):
     def _update_normal_item(self, item):
         self._decrease_quality(item)
 
+    # --- Guard clauses aplicadas aquí ---
+
+    def _handle_expired(self, item):
+        if item.name == self.BACKSTAGE_PASSES:
+            item.quality = 0
+            return
+
+        if item.name == self.AGED_BRIE:
+            self._increase_quality(item)
+            return
+
+        self._decrease_quality(item)
+
     def _is_sulfuras(self, item):
         return item.name == self.SULFURAS
 
+    # --- Helpers ---
+
     def _increase_quality(self, item):
-        if item.quality < 50:
-            item.quality += 1
+        if item.quality >= 50:
+            return
+        item.quality += 1
 
     def _decrease_quality(self, item):
-        if item.quality > 0:
-            item.quality -= 1
+        if item.quality <= 0:
+            return
+        item.quality -= 1
 
 
 class Item:
