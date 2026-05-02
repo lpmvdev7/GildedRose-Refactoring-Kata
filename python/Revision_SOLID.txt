@@ -1,0 +1,12 @@
+¿Cada clase tiene una sola razon de cambio?
+Sí, en términos generales cada clase tiene una sola razón de cambio. Cada ItemUpdater encapsula reglas específicas de un tipo de ítem, así que solo cambiaría si cambian esas reglas de negocio concretas. El UpdaterFactory, por su parte, tiene la única responsabilidad de decidir qué estrategia usar. Eso está bastante alineado con el principio de responsabilidad única.
+
+
+¿Puedes agregar un item nuevo sin modificar codigo existente?
+Sobre si puedes agregar un ítem nuevo sin modificar código existente, la respuesta honesta es: casi. El diseño facilita mucho la extensión porque solo necesitas crear una nueva clase, pero aún tienes que registrarla en el factory. Eso implica tocar código existente, así que no es un cumplimiento perfecto del principio Open/Closed. Está bien encaminado, pero no completamente cerrado a modificación.
+
+¿Cualquier ItemUpdater puede reemplazar a la clase base?
+Respecto a si cualquier ItemUpdater puede reemplazar a la clase base, sí, siempre que respete el contrato implícito de tener un método update que opere sobre el ítem. GildedRose no depende del tipo concreto, solo de ese comportamiento, lo cual cumple bien con el principio de sustitución de Lisko
+
+¿GildedRose depende de la abstraccion, no de clases concretas?
+Finalmente, sobre si GildedRose depende de abstracciones y no de clases concretas, la respuesta es parcial. La clase principal no conoce directamente las implementaciones concretas, lo cual es positivo, pero sigue dependiendo del factory, y ese factory sí conoce todas las clases concretas. Eso significa que el desacoplamiento es bueno, pero no total; aún no se cumple completamente el principio de inversión de dependencias.
