@@ -1,0 +1,9 @@
+1. Describe en 3 líneas la estrategia que seguiste:
+
+Primero ejecuté los tests para ver el comportamiento real. Luego extraje constantes y métodos. Finalmente apliqué el patrón Strategy con un factory para eliminar todos los condicionales.
+
+2. ¿Qué harías diferente si repitieras el kata?
+Haría los commits más pequeños y frecuentes desde el inicio
+
+3. ¿Qué técnica puedes aplicar en tu proyecto actual?
+Extraer métodos privados con nombres descriptivos antes de intentar un rediseño mayor
